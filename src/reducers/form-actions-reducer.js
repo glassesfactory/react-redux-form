@@ -33,7 +33,7 @@ const resetFieldState = (field, customInitialFieldState) => {
   return fieldOrForm(
     getMeta(field, 'model'),
     resetValue,
-    { ...customInitialFieldState, intents }
+    Object.assign({}, customInitialFieldState, {intents })
   );
 };
 
@@ -76,14 +76,14 @@ const defaultOptions = {
 
 export function createFormActionsReducer(options) {
   const formOptions = options
-    ? {
-      ...defaultOptions,
-      ...options,
-      initialFieldState: {
-        ...defaultOptions.initialFieldState,
-        ...options.initialFieldState,
-      },
-    }
+    ? Object.assign({},
+      defaultOptions,
+      options,
+      {initialFieldState: Object.assign({},
+        defaultOptions.initialFieldState,
+        options.initialFieldState,
+      )},
+    )
     : defaultOptions;
 
   const customInitialFieldState = formOptions.initialFieldState;
@@ -226,8 +226,8 @@ export function createFormActionsReducer(options) {
       }
 
       case actionTypes.RESET_VALIDITY: {
-        let validity = { ...fieldState.validity };
-        let errors = { ...fieldState.errors };
+        let validity = Object.assign({}, fieldState.validity );
+        let errors = Object.assign({},fieldState.errors );
         let valid;
 
         if (action.omitKeys) {
@@ -358,11 +358,11 @@ export function createFormActionsReducer(options) {
           const formModelValue = getFormValue(parentForm);
 
           if (!parentForm.$form) {
-            return {
-              ...customInitialFieldState,
-              value: formModelValue,
+            return Object.assign({},
+              customInitialFieldState,
+              {value: formModelValue,
               initialValue: formModelValue,
-            };
+            });
           }
 
           // If the form is invalid (due to async validity)

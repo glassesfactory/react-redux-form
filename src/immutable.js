@@ -71,26 +71,23 @@ function immutableGetFieldFromState(state, modelString) {
   return getField(state, modelString, { getForm: immutableGetForm });
 }
 
-const immutableStrategy = {
-  ...baseStrategy,
+const immutableStrategy = Object.assign({}, baseStrategy,{
   getForm: immutableGetForm,
   getFieldFromState: immutableGetFieldFromState,
   findKey: immutableFindKey,
-};
+});
 
 function transformAction(action) {
   if (action.value && action.value.toJS) {
-    return {
-      ...action,
+    return Object.assign({}, action, {
       value: action.value.toJS(),
-    };
+    })
   }
 
   if (action.actions) {
-    return {
-      ...action,
+    return Object.assign({}, action, {
       actions: action.actions.map(transformAction),
-    };
+    });
   }
 
   return action;
@@ -101,20 +98,18 @@ function immutableFormReducer(model, initialState = new Immutable.Map(), options
     ? initialState.toJS()
     : initialState;
 
-  return formReducer(model, _initialState, {
-    ...options,
-    transformAction,
-  });
+  return formReducer(model, _initialState, Object.assign({}, options, {
+    transformAction
+  }));
 }
 
 const immutableModelActions = createModelActions(immutableStrategy);
 const immutableFieldActions = createFieldActions(immutableStrategy);
 
-const immutableActions = {
-  ...immutableModelActions,
-  ...immutableFieldActions,
-  batch,
-};
+const immutableActions = Object.assign({},
+  immutableModelActions,
+  immutableFieldActions,
+  {batch})
 
 const immutableModelReducer = createModeler(immutableStrategy);
 const immutableModelReducerEnhancer = createModelReducerEnhancer(immutableModelReducer);
@@ -132,10 +127,9 @@ const ImmutableField = createFieldClass(controlPropsMap, {
   actions: immutableModelActions,
 });
 const ImmutableErrors = createErrorsClass(immutableStrategy);
-const ImmutableForm = createFormClass({
-  ...immutableStrategy,
+const ImmutableForm = createFormClass(Object.assign({}, immutableStrategy,{
   actions: immutableActions,
-});
+}));
 
 const immutableFormCombiner = createFormCombiner({
   modelReducer: immutableModelReducer,

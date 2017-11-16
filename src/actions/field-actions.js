@@ -33,12 +33,13 @@ function createFieldActions(s = defaultStrategies) {
     options,
   });
 
-  const focus = (model, value, options = {}) => ({
+  const focus = (model, value, options = {}) => (Object.assign({}, {
     type: actionTypes.FOCUS,
     model,
-    value,
-    ...options,
-  });
+    value
+  },
+  options,
+  ));
 
   const silentFocus = (model, value) => focus(model, value, {
     silent: true,
@@ -64,12 +65,12 @@ function createFieldActions(s = defaultStrategies) {
     model,
   });
 
-  const setPending = (model, pending = true, options) => ({
+  const setPending = (model, pending = true, options) => (Object.assign({}, {
     type: actionTypes.SET_PENDING,
     model,
-    pending,
-    ...options,
-  });
+    pending},
+    options,
+  ));
 
   const setValidating = (model, validating = true) => ({
     type: actionTypes.SET_VALIDATING,
@@ -77,14 +78,15 @@ function createFieldActions(s = defaultStrategies) {
     validating,
   });
 
-  const setValidity = (model, validity, options = {}) => ({
-    type: options.errors
-      ? actionTypes.SET_ERRORS
-      : actionTypes.SET_VALIDITY,
-    model,
-    ...options,
-    [options.errors ? 'errors' : 'validity']: validity,
-  });
+  const setValidity = (model, validity, options = {}) => (Object.assign({}, {
+      type: options.errors
+        ? actionTypes.SET_ERRORS
+        : actionTypes.SET_VALIDITY,
+      model
+    },
+    options,
+    {[options.errors ? 'errors' : 'validity']: validity}
+  ));
 
   const resetValidity = (model, omitKeys = false) => ({
     type: actionTypes.RESET_VALIDITY,
@@ -100,16 +102,16 @@ function createFieldActions(s = defaultStrategies) {
   });
 
   const setErrors = (model, errors, options = {}) =>
-    setValidity(model, errors, {
-      ...options,
-      errors: true,
-    });
+    setValidity(model, errors, Object.assign({},
+      options,
+      {errors: true,
+    }));
 
   const setFieldsErrors = (model, fieldsErrors, options) =>
-    setFieldsValidity(model, fieldsErrors, {
-      ...options,
-      errors: true,
-    });
+    setFieldsValidity(model, fieldsErrors, Object.assign({},
+      options,
+      {errors: true,
+    }));
 
   const resetErrors = resetValidity;
 
@@ -129,10 +131,10 @@ function createFieldActions(s = defaultStrategies) {
     dispatch(setValidating(model, true));
 
     const done = (validity) => {
-      dispatch(setValidity(model, validity, {
-        async: true,
-        ...options,
-      }));
+      dispatch(setValidity(model, validity, Object.assign({}, {
+        async: true},
+        options
+      )));
     };
 
     const immediateResult = validator(value, done);
@@ -143,10 +145,11 @@ function createFieldActions(s = defaultStrategies) {
   };
 
   const asyncSetErrors = (model, validator, options = {}) =>
-    asyncSetValidity(model, validator, {
-      errors: true,
-      ...options,
-    });
+    asyncSetValidity(model, validator, Object.assign({}, {
+      errors: true
+    },
+    options,
+    ));
 
   const setSubmitted = (model, submitted = true) => ({
     type: actionTypes.SET_SUBMITTED,
@@ -154,12 +157,13 @@ function createFieldActions(s = defaultStrategies) {
     submitted,
   });
 
-  const setSubmitFailed = (model, submitFailed = true, options) => ({
-    type: actionTypes.SET_SUBMIT_FAILED,
-    model,
-    submitFailed,
-    ...options,
-  });
+  const setSubmitFailed = (model, submitFailed = true, options) => (Object.assign({
+      type: actionTypes.SET_SUBMIT_FAILED,
+      model,
+      submitFailed
+    },
+    options,
+  ));
 
   const submit = (model, promise, options = {}) => {
     if (typeof promise === 'undefined') {
@@ -230,16 +234,16 @@ function createFieldActions(s = defaultStrategies) {
   };
 
   const submitFields = (model, promise, options = {}) =>
-    submit(model, promise, {
-      ...options,
-      fields: true,
-    });
+    submit(model, promise, Object.assign({},
+      options,
+      {fields: true}
+    ));
 
   const validSubmit = (model, promise, options = {}) =>
-    submit(model, promise, {
-      ...options,
-      validate: true,
-    });
+    submit(model, promise, Object.assign({},
+      options,
+      {validate: true}
+    ));
 
   const validate = (model, validators) => (dispatch, getState) => {
     const value = s.get(getState(), model);
@@ -277,10 +281,10 @@ function createFieldActions(s = defaultStrategies) {
     };
 
   const validateFieldsErrors = (model, fieldErrorsValidators, options = {}) =>
-    validateFields(model, fieldErrorsValidators, {
-      ...options,
-      errors: true,
-    });
+    validateFields(model, fieldErrorsValidators, Object.assign({},
+      options,
+      {errors: true}
+    ));
 
   return mapValues({
     blur,

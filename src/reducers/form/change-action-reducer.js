@@ -58,23 +58,24 @@ function updateFieldValue(field, action, parentModel = undefined) {
       Object.keys(field).forEach((key) => {
         if (!!~removeKeysArray.indexOf(+key) || (key === '$form')) return;
 
-        result[key] = { ...field[key] };
+        // result[key] = { ...field[key] };
+        result[key] = Object.assign({}, field[key]);
       });
 
-      const finalResult = { ...result
+      const finalResult = Object.assign({}, result
         .filter((f) => f)
-        .map((subField, index) => ({
-          ...subField,
+        .map((subField, index) => (Object.assign({},
+          subField,{
           model: `${model}.${index}`,
-        })),
-      };
+        }))),
+      );
 
       finalResult.$form = field.$form;
 
       return finalResult;
     }
 
-    result = { ...field };
+    result = Object.assign({}, field);
 
     Object.keys(field).forEach((key) => {
       if (!!~removeKeysArray.indexOf(key)) {
@@ -138,10 +139,9 @@ export default function changeActionReducer(state, action, localPath) {
 
     const formValue = getFormValue(form);
 
-    const formUpdates = {
-      ...form.$form,
-      value: formValue,
-    };
+    const formUpdates = Object.assign({},
+      form.$form,
+      {value: formValue})
 
     if (action.silent) {
       formUpdates.loadedValue = formValue;
@@ -149,10 +149,10 @@ export default function changeActionReducer(state, action, localPath) {
       formUpdates.pristine = false;
     }
 
-    return {
-      ...form,
+    return Object.assign({},
+      form,{
       $form: formUpdates,
-    };
+    });
   });
 
   return updatedState;

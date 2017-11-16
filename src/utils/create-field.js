@@ -30,33 +30,37 @@ function getSubModelString(model, subModel) {
 }
 
 export function updateFieldState(existingFieldState, updatedFieldState) {
-  const newField = {
-    ...existingFieldState,
-    ...updatedFieldState,
-  };
+  const newField = Object.assign({},
+    existingFieldState,
+    updatedFieldState,
+  );
 
   return newField;
 }
 
 export default function createFieldState(model, value, customInitialFieldState) {
-  return {
+  return Object.assign({}, {
     initialValue: value,
-    ...initialFieldState,
-    ...customInitialFieldState,
     model,
-    value,
-  };
+    value
+    },
+    initialFieldState,
+    customInitialFieldState,
+  );
 }
 
 export function createFormState(model, values, customInitialFieldState, options = {}) {
-  return {
-    $form: createFieldState(model, values, customInitialFieldState, options),
-    ...(options.lazy
+  return Object.assign({},
+    {
+      $form: createFieldState(model, values, customInitialFieldState, options)
+    },
+    (options.lazy
       ? undefined
       : mapValues(values, (value, key) => {
         const subModel = getSubModelString(model, key);
 
         return fieldOrForm(subModel, value, customInitialFieldState);
-      })),
-  };
+      })
+    )
+  )
 }

@@ -35,11 +35,12 @@ const standardPropsMap = {
   onKeyPress: ({ onKeyPress }) => onKeyPress,
 };
 
-const textPropsMap = {
-  ...standardPropsMap,
+const textPropsMap = Object.assign({},
+  standardPropsMap,
   // the value passed into the control is either the original control's
   // value prop (if the control is controlled) or the value controlled by
   // <Control>.
+  {
   value: (props) => {
     if (props.hasOwnProperty('value')) {
       return props.value;
@@ -49,46 +50,49 @@ const textPropsMap = {
 
     return value === undefined ? '' : value;
   },
-};
+});
 
 const getModelValue = ({ modelValue }) => modelValue;
-const getViewValue = (props) =>
-  (props.hasOwnProperty('value') ? props.value : props.viewValue);
 
 const controlPropsMap = {
-  default: {
-    ...standardPropsMap,
-    value: getViewValue,
-  },
-  checkbox: {
-    ...standardPropsMap,
-    checked: isChecked,
-  },
-  radio: {
-    ...standardPropsMap,
-    checked: (props) => (props.defaultChecked
+  default: Object.assign({},
+    standardPropsMap,
+    {
+      value: (props) => (props.hasOwnProperty('value')
+      ? props.value
+      : props.viewValue),
+    }),
+  checkbox: Object.assign({},
+    standardPropsMap,
+    {checked: isChecked}
+  ),
+  radio: Object.assign({},
+    standardPropsMap,
+    {
+      checked: (props) => (props.defaultChecked
       ? props.checked
       : props.modelValue === props.value),
-    value: (props) => props.value,
-  },
-  select: {
-    ...standardPropsMap,
-    value: getViewValue,
-  },
+      value: (props) => props.value,
+    }),
+  select: Object.assign({},
+    standardPropsMap,
+    {
+      value: getModelValue,
+    }),
   text: textPropsMap,
   textarea: textPropsMap,
   file: standardPropsMap,
-  button: {
-    ...standardPropsMap,
-    value: getModelValue,
-  },
-  reset: {
-    ...standardPropsMap,
-    onClick: (props) => (event) => {
-      event.preventDefault();
-      props.dispatch(actions.reset(props.model));
+  button: Object.assign({},
+    standardPropsMap,
+    {value: getModelValue}),
+  reset: Object.assign({},
+    standardPropsMap,
+    {
+      onClick: (props) => (event) => {
+        event.preventDefault();
+        props.dispatch(actions.reset(props.model));
     },
-  },
+  })
 };
 
 export default controlPropsMap;
