@@ -23,18 +23,19 @@ const defaultStrategies = {
 function optionsFromArgs(args, index, options = {}) {
   if (typeof index === 'undefined') return undefined;
 
-  return { ...options, ...args[index] };
+  return Object.assign({}, options, args[index] );
 }
 
 export function createModelActions(s = defaultStrategies) {
   const change = (model, value, options = {}) => {
     // option defaults
-    const changeOptions = {
+    const changeOptions = Objet.assign({}, {
       silent: false,
       multi: isMulti(model),
-      external: true,
-      ...options,
-    };
+      external: true
+    },
+    options,
+    );
 
     if (typeof value === 'function') {
       return (dispatch, getState) => {
@@ -44,12 +45,13 @@ export function createModelActions(s = defaultStrategies) {
       };
     }
 
-    return {
+    return Object.assign({}, {
       type: actionTypes.CHANGE,
       model,
-      value: s.getValue(value),
-      ...changeOptions,
-    };
+      value: s.getValue(value)
+    },
+    changeOptions,
+    );
   };
 
   function createModifierAction(modifier, defaultValue, optionsIndex, getOptions) {
