@@ -152,11 +152,12 @@ export function createModelActions(s = defaultStrategies) {
     return newValue;
   }, {}, 2, (_, props) => ({ removeKeys: props }));
 
-  const load = (model, values, options) => change(model, values, {
+  const load = (model, values, options) => change(model, values, Object.assign({}, {
     silent: true,
-    load: true,
-    ...options,
-  });
+    load: true
+  },
+  options,
+  ));
 
   return mapValues({
     change,
