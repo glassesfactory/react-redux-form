@@ -375,13 +375,14 @@ function createFormClass(s = defaultStrategy) {
         : children;
 
       return React.createElement(component,
-        {
-          ...allowedProps,
-          onSubmit: this.handleSubmit,
-          onReset: this.handleReset,
-          ref: this.attachNode,
-          noValidate: hideNativeErrors || noValidate,
-        }, renderableChildren);
+        Object.assign({},
+          allowedProps,
+          {
+            onSubmit: this.handleSubmit,
+            onReset: this.handleReset,
+            ref: this.attachNode,
+            noValidate: hideNativeErrors || noValidate,
+          }), renderableChildren);
     }
   }
 

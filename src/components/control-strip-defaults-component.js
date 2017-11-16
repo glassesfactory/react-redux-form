@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 // Prevents the defaultValue/defaultChecked fields from rendering with value/checked
 class ComponentWrapper extends Component {
   render() {
@@ -9,10 +9,13 @@ class ComponentWrapper extends Component {
       defaultValue,
       defaultChecked,
       component,
-      getRef,
-      ...otherProps,
+      getRef
     } = this.props;
     /* eslint-enable */
+    const otherProps = _objectWithoutProperties(this.props, ["defaultValue",
+      "defaultChecked",
+      "component",
+      "getRef"])
 
     if (getRef) {
       otherProps.ref = getRef;

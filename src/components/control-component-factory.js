@@ -32,10 +32,11 @@ import ComponentWrapper from './control-strip-defaults-component';
 const disallowedProps = ['changeAction', 'getFieldFromState', 'store'];
 
 function mergeOrSetErrors(model, errors, options) {
-  return actions.setErrors(model, errors, {
+  return actions.setErrors(model, errors, Object.assign({}, {
     merge: isObjectLike(errors),
-    ...options,
-  });
+  },
+    options,
+  ));
 }
 
 const propTypes = {
@@ -194,15 +195,16 @@ function createControlClass(s) {
       const props = this.props;
       const { mapProps } = props;
       const { viewValue } = this.state;
-      const originalProps = {
-        ...props,
-        ...props.controlProps,
+      const originalProps = Object.assign({},
+        props,
+        props.controlProps,
+      {
         onFocus: this.handleFocus,
         onBlur: this.handleBlur,
         onChange: this.handleChange,
         onKeyPress: this.handleKeyPress,
         viewValue,
-      };
+      });
 
       if (isPlainObject(mapProps)) {
         return mapValues(mapProps, (value, key) => {
@@ -630,21 +632,23 @@ function createControlClass(s) {
       if (control) {
         return cloneElement(
           control,
-          {
-            ...mappedProps,
-            defaultValue: undefined,
-            defaultChecked: undefined,
-          },
+          Object.assign({},
+            mappedProps,
+            {
+              defaultValue: undefined,
+              defaultChecked: undefined
+            }
+          ),
           controlProps.children
         );
       }
       return createElement(
         ComponentWrapper,
-        {
-          component,
-          ...controlProps,
-          ...mappedProps,
-        }
+        Object.assign({},
+          {component},
+          controlProps,
+          mappedProps
+        )
       );
     }
   }
@@ -675,10 +679,10 @@ function createControlClass(s) {
       controlProps,
     } = props;
 
-    const finalControlProps = {
-      ...controlProps,
-      ...omit(props, disallowedPropTypeKeys),
-    };
+    const finalControlProps = Object.assign({},
+      controlProps,
+      omit(props, disallowedPropTypeKeys)
+    );
 
     const modelString = getModel(model, state);
     const fieldValue = s.getFieldFromState(state, modelString)
@@ -720,10 +724,10 @@ function createControlClass(s) {
       return (
         <ConnectedControl
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.default,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.default,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -740,10 +744,10 @@ function createControlClass(s) {
         <ConnectedControl
           component="input"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.default,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.default,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -757,11 +761,11 @@ function createControlClass(s) {
         <ConnectedControl
           component="input"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.text,
-            type: this.props.type || 'text',
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.text,
+            {type: this.props.type || 'text'},
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -775,11 +779,11 @@ function createControlClass(s) {
         <ConnectedControl
           component="input"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.text,
-            type: this.props.type || 'password',
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.text,
+            {type: this.props.type || 'password'},
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -794,10 +798,10 @@ function createControlClass(s) {
           component="textarea"
           updateOnEnter={false}
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.textarea,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.textarea,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -813,10 +817,10 @@ function createControlClass(s) {
           type="radio"
           isToggle
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.radio,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.radio,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -832,10 +836,10 @@ function createControlClass(s) {
           type="checkbox"
           isToggle
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.checkbox,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.checkbox,
+            this.props.mapProps,
+          )}
           getValue={getCheckboxValue}
           changeAction={this.props.changeAction || s.actions.checkWithValue}
         />
@@ -852,10 +856,10 @@ function createControlClass(s) {
           component="input"
           type="file"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.file,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.file,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -869,10 +873,10 @@ function createControlClass(s) {
         <ConnectedControl
           component="select"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.select,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.select,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -886,10 +890,10 @@ function createControlClass(s) {
         <ConnectedControl
           component="button"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.button,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.button,
+            this.props.mapProps,
+          )}
         />
       );
     }
@@ -904,10 +908,10 @@ function createControlClass(s) {
           component="button"
           type="reset"
           {...this.props}
-          mapProps={{
-            ...controlPropsMap.reset,
-            ...this.props.mapProps,
-          }}
+          mapProps={Object.assign({},
+            controlPropsMap.reset,
+            this.props.mapProps,
+          )}
         />
       );
     }

@@ -131,10 +131,10 @@ function createFieldClass(customControlPropsMap = {}, s = defaultStrategy) {
   }
 
   const options = {
-    controlPropsMap: {
-      ...controlPropsMap,
-      ...customControlPropsMap,
-    },
+    controlPropsMap: Object.assign({},
+      controlPropsMap,
+      customControlPropsMap,
+    )
   };
 
   // TODO: refactor
@@ -186,14 +186,14 @@ function createFieldClass(customControlPropsMap = {}, s = defaultStrategy) {
 
       return React.createElement(
         s.Control,
-        {
-          ...controlProps,
-          control,
+        Object.assign({},
+          controlProps,
+          {control,
           controlProps: control.props,
           component: control.type,
-          mapProps,
-          ...(defaultControlPropsMap[controlType] || {}),
-        });
+          mapProps},
+          (defaultControlPropsMap[controlType] || {}),
+        ));
     }
 
     mapChildrenToControl(children) {
