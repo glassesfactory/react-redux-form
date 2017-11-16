@@ -5,7 +5,6 @@ import batch from './batch-actions';
 const actions = Object.assign({},
   fieldActions,
   modelActions,
-,
   {batch}
 );
 
