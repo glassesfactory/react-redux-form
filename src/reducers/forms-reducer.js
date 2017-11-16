@@ -24,20 +24,22 @@ const defaultStrategy = {
   toJS: identity,
 };
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 function createFormCombiner(strategy = defaultStrategy) {
   function createForms(forms, model = '', options = {}) {
     const formKeys = Object.keys(forms);
     const modelReducers = {};
     const initialFormState = {};
-    const optionsWithDefaults = {
-      ...defaults,
-      ...options,
-    };
+    const optionsWithDefaults = Object.assign({},
+      defaults,
+      options
+    );
     const {
       key,
-      plugins,
-      ...formOptions,
+      plugins
     } = optionsWithDefaults;
+    const formOptions = _objectWithoutProperties(optionsWithDefaults, ["key", "plugins"]);
 
     formKeys.forEach((formKey) => {
       const formValue = forms[formKey];
@@ -59,20 +61,21 @@ function createFormCombiner(strategy = defaultStrategy) {
       }
     });
 
-    return {
-      ...modelReducers,
-      [key]: (state, action) => strategy.formReducer(model, initialFormState, {
-        plugins,
-        ...formOptions,
-      })(state, action),
-    };
-  }
+    return Object.assign({},
+      modelReducers,
+      {
+        [key]: (state, action) => strategy.formReducer(model, initialFormState, Object.assign({}, {
+          plugins},
+          formOptions,
+        ))(state, action)
+      })
+    }
 
-  function combineForms(forms, model = '', options = {}) {
-    const mappedReducers = createForms(forms, model, options);
+    function combineForms(forms, model = '', options = {}) {
+      const mappedReducers = createForms(forms, model, options);
 
-    return combineReducers(mappedReducers);
-  }
+      return combineReducers(mappedReducers);
+    }
 
   return {
     createForms,

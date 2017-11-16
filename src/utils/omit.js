@@ -2,7 +2,7 @@ export default function omit(object, props) {
   if (object == null) {
     return {};
   }
-  const newObject = { ...object };
+  const newObject = Object.assign({}, object );
 
   if (typeof props === 'string') {
     delete newObject[props];
